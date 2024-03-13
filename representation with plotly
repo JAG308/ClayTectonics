@@ -1,4 +1,4 @@
-## The following script retrieves all the sets of ship tracks data from C:\\Users\\jesus.alonso.guerra\\Documents\\coordmap\\CoordMap\\ClayT and plots them on a world map all together.
+## The following script retrieves all the sets of ship tracks data from C:\\Users\\jesus.alonso.guerra\\Documents\\coordmap\\CoordMap\\ClayT and plots them on a map all together.
 
 require(readxl)
 require(tidyverse)
