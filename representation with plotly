@@ -1,0 +1,57 @@
+## The following script retrieves all the sets of ship tracks data from C:\\Users\\jesus.alonso.guerra\\Documents\\coordmap\\CoordMap\\ClayT and plots them on a world map all together.
+
+require(readxl)
+require(tidyverse)
+library(data.table)
+library(plotly)
+library(dplyr)
+
+list_of_files <- list.files(path = "C:\\Users\\jesus.alonso.guerra\\Documents\\coordmap\\CoordMap\\ClayT",
+                            recursive = TRUE,
+                            pattern = "*.NAV",
+                            full.names = TRUE)
+df1 <- list_of_files %>%
+  set_names() %>% 
+  map_df(~fread(.))  
+
+colnames(df) <- c("vessel", "number", "Longitude", "Latitude", "date", "time")
+
+C <- subset(df, number == 1| lead(number == 1))
+
+C$VesselCode1 = substr(C$vessel, 1, 3)
+
+#table(C$VesselCode1)
+
+#C[,7] <- NULL
+
+# Create a plotly map with multiple tracks
+plot <- plot_ly(C, type = "scattergeo",
+                mode = "markers+lines",
+                lat = ~Latitude, lon = ~Longitude, 
+                text = ~paste("Vessel :", C$vessel,
+                              "date :", C$date,
+                              "time :", C$time),
+                color = ~factor(VesselCode1))
+
+# Set the layout for the plot
+plot <- plot %>% 
+  layout(geo = list(scope = "world", 
+                    projection = list(type = "natural earth"),
+                    showland = TRUE,
+                    landcolor = "rgb(217, 217, 217)",  # Change land color to grey
+                    showocean = TRUE,
+                    oceancolor = "rgb(204, 230, 255)",  # Change ocean color to light blue
+                    showcountries = TRUE,
+                    countrycolor = "rgb(100, 100, 100)",  # Change country border color
+                    showlakes = TRUE,
+                    lakecolor = "rgb(204, 230, 255)",  # Change lake color to match ocean
+                    showrivers = TRUE,
+                    rivercolor = "rgb(204, 230, 255)",  # Change river color to match ocean
+                    showcoastlines = TRUE,
+                    coastlinecolor = "rgb(100, 100, 100)",  # Change coastline color
+                    showframe = TRUE))  
+
+
+
+# Show the plot
+plot
